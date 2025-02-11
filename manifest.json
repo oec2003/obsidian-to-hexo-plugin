@@ -1,0 +1,9 @@
+{
+    "id": "obsidian-pub-to-hexo-plugin",
+    "name": "Publish to Hexo",
+    "version": "1.0.0",
+    "minAppVersion": "0.15.0",
+    "description": "Export Obsidian notes to Hexo blog format.",
+    "author": "oec2003",
+    "isDesktopOnly": false
+}
