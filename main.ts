@@ -136,6 +136,22 @@ tags: ${tags}
 ---`;
     }
 
+    // 处理文章内容，添加 more 标记
+    processContent(content: string): string {
+        // 移除原始的 front-matter
+        const contentWithoutFrontMatter = content.replace(/^---\n[\s\S]*?\n---\n/, '');
+        
+        // 按照空行分割段落
+        const paragraphs = contentWithoutFrontMatter.split(/\n\s*\n/);
+        
+        if (paragraphs.length <= 1) {
+            return contentWithoutFrontMatter;
+        }
+        
+        // 重新组合内容，在第一段后添加 more 标记
+        return paragraphs[0] + '\n\n<!-- more -->\n\n' + paragraphs.slice(1).join('\n\n');
+    }
+
     // 获取并转换标题，然后发布到 Hexo
     async convertAndShowTitle() {
         if (!this.settings.baiduAppId || !this.settings.baiduKey) {
@@ -172,14 +188,14 @@ tags: ${tags}
                 .replace(/\s+/g, '-') // 空格替换为横线
                 .replace(/-+/g, '-'); // 移除多余的横线
 
-            // 移除原始的 front-matter
-            const contentWithoutFrontMatter = content.replace(/^---\n[\s\S]*?\n---\n/, '');
+            // 处理内容，添加 more 标记
+            const processedContent = this.processContent(content);
             
             // 构建新的 front-matter
             const hexoFrontMatter = this.createHexoFrontMatter(originalFrontMatter);
             
             // 构建完整的文件内容
-            const fullContent = hexoFrontMatter + '\n' + contentWithoutFrontMatter;
+            const fullContent = hexoFrontMatter + '\n' + processedContent;
             
             // 发布到 Hexo
             await this.publishToHexo(slugTitle, fullContent);
